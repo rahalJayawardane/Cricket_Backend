@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cricket_Backend.iml" filepath="$PROJECT_DIR$/.idea/modules/Cricket_Backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cricket_Backend_main.iml" filepath="$PROJECT_DIR$/.idea/modules/Cricket_Backend_main.iml" group="Cricket_Backend" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cricket_Backend_test.iml" filepath="$PROJECT_DIR$/.idea/modules/Cricket_Backend_test.iml" group="Cricket_Backend" />
       <module fileurl="file://$PROJECT_DIR$/rest_dlb.iml" filepath="$PROJECT_DIR$/rest_dlb.iml" />
     </modules>
   </component>

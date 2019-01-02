@@ -1,4 +1,4 @@
-package Util;
+package Server.Util;
 
 import java.util.Random;
 import java.util.UUID;

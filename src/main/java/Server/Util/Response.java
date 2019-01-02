@@ -1,4 +1,4 @@
-package Util;
+package Server.Util;
 
 /**
  * Created by rahal_j on 8/13/2018.

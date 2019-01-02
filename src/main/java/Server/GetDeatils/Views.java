@@ -2,8 +2,8 @@ package Server.GetDeatils;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import Util.ResData;
-import Util.Response;
+import Server.Util.ResData;
+import Server.Util.Response;
 
 /**
  * Created by Rahal on 1/1/2019.

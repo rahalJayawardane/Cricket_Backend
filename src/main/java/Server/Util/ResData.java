@@ -1,4 +1,4 @@
-package Util;
+package Server.Util;
 
 
 public class ResData {

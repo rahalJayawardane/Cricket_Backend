@@ -1,45 +1,51 @@
 package Server.Util;
 
-/**
- * Created by rahal_j on 8/13/2018.
- */
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 public class Response {
 
-    private String  gameCode;
-    private String  teamOne;
-    private String  teamTwo;
-    private String  gameDate;
+    private String      reqId;
+    private JSONArray   list;
+    private JSONObject  message;
 
 
-    public String getGameCode() {
-        return gameCode;
+    public Response(String requestId, JSONArray data) throws Exception {
+        this.reqId = requestId;
+        this.list  = data;
+
     }
 
-    public void setGameCode(String gameCode) {
-        this.gameCode = gameCode;
+    public Response(String requestId, JSONObject data) throws Exception {
+        this.reqId = requestId;
+        this.message= data;
     }
 
-    public String getTeamOne() {
-        return teamOne;
+
+    public JSONArray getList() {
+        return list;
     }
 
-    public void setTeamOne(String teamOne) {
-        this.teamOne = teamOne;
+    public void setList(JSONArray list) {
+        this.list = list;
     }
 
-    public String getTeamTwo() {
-        return teamTwo;
+    public JSONObject getMessage() {
+        return message;
     }
 
-    public void setTeamTwo(String teamTwo) {
-        this.teamTwo = teamTwo;
+    public void setMessage(JSONObject message) {
+        this.message = message;
     }
 
-    public String getGameDate() {
-        return gameDate;
+    public String getReqId() {
+        return reqId;
     }
 
-    public void setGameDate(String gameDate) {
-        this.gameDate = gameDate;
+    public void setReqId(String reqId) {
+        this.reqId = reqId;
     }
+
+
 }

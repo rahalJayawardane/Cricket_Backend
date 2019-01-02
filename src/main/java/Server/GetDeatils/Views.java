@@ -1,8 +1,10 @@
 package Server.GetDeatils;
 
+import Server.Util.LogHandler;
+import Server.Util.SessionHandler;
+import Server.Util.UtilMethods;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import Server.Util.ResData;
 import Server.Util.Response;
 
 /**
@@ -20,13 +22,10 @@ public class Views {
 
 
     @RequestMapping("/getGameDetails")
-    public ResData getGameDetails() throws Exception {
-        Response response = new Response();
-        response.setGameCode("CAF");
-        response.setTeamOne("Alexsandar Women Team");
-        response.setTeamTwo("FallBall Women Team");
-        response.setGameDate("2018-12-31");
-        return new ResData(response);
+    public Response getGameDetails(SessionHandler s) throws Exception {
+        String reqId = UtilMethods.getReqId();
+        LogHandler.writeInfoFile(reqId, "Method Calling : Games Details");
+        return new Response(reqId, s.getList());
     }
 
 

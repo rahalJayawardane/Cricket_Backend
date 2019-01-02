@@ -1,8 +1,10 @@
 package Server.GetRows;
 
-import Server.Util.ResData;
+import Server.Database.DatabaseLayer;
+import Server.Util.LogHandler;
 import Server.Util.Response;
 import Server.Util.SessionHandler;
+import Server.Util.UtilMethods;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,13 +23,17 @@ public class CricketTable {
 
 
     @RequestMapping("/getCricketGames")
-    public ResData getCricketGames(SessionHandler s) throws Exception {
-        Response response = new Response();
-        response.setGameCode(s.getGameId());
-        response.setTeamOne("Alexsandar Women Team");
-        response.setTeamTwo("FallBall Women Team");
-        response.setGameDate(s.getGameDate());
-        return new ResData(response);
+    public Response getCricketGames(SessionHandler s) throws Exception {
+
+        String reqId = UtilMethods.getReqId();
+
+        LogHandler.writeInfoFile(reqId, "Method Calling : Games Details");
+        LogHandler.writeInfoFile(reqId, "Get details from database");
+
+        DatabaseLayer.getCricketGames(s);
+
+        LogHandler.writeInfoFile(reqId, "Send response to frontend");
+        return new Response(reqId, s.getList());
     }
 
 

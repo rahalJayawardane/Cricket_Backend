@@ -15,11 +15,15 @@ public class Response {
         this.reqId = requestId;
         this.list  = data;
 
+        LogHandler.writeInfoFile(reqId, "Response : "+list.toString());
+
     }
 
     public Response(String requestId, JSONObject data) throws Exception {
         this.reqId = requestId;
         this.message= data;
+
+        LogHandler.writeInfoFile(reqId, "Response : "+message.toString());
     }
 
 

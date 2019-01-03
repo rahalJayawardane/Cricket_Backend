@@ -11,9 +11,18 @@ public class SessionHandler {
     private static Connection  dbCon;
     private static String      gameId;
     private static String      gameDate;
+    private static int         colNo;
     private static JSONObject  message;
     private static JSONArray   list;
 
+
+    public static int getColNo() {
+        return colNo;
+    }
+
+    public static void setColNo(int colNo) {
+        SessionHandler.colNo = colNo;
+    }
 
     public static JSONArray getList() {
         return list;

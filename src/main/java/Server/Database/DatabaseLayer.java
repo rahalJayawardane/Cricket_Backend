@@ -14,6 +14,11 @@ public class DatabaseLayer {
         DataBaseQuery.getGameDetails(s);
     }
 
+
+    public static void getColumnDetails(SessionHandler s) throws Exception{
+        DataBaseQuery.getColumnDetails(s);
+    }
+
     //Insert    ---------------------------------------------------------------
 
 

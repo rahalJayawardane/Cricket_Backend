@@ -1,5 +1,10 @@
 package Server.Util;
 
+import Server.LogHandler.LogWriter;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,6 +52,15 @@ public class UtilMethods {
             }
         }
         return tString;
+    }
+
+
+    public static void getStackTrace(Throwable aThrowable,SessionHandler s) throws Exception {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        aThrowable.printStackTrace(printWriter);
+        LogWriter.writeInfoFile(s.getRequestId(),"Error Occurred. Please check the ERROR file for more details");
+        LogWriter.writeErrorFile(s.getRequestId(), result.toString());
     }
 
 }

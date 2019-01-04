@@ -1,45 +1,65 @@
 package Server.Database;
 
 
-import Server.Util.LogHandler;
-import Server.Util.SessionHandler;
+import Server.Configurations.SysConfig;
+import Server.LogHandler.LogWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.sql.DataSource;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.dbcp.PoolingDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
 
 
 public class DatabaseConfig {
 
-    private static String userName   = "root";
-    private static String dbName     = "cricket";
-    private static String url        = "jdbc:mysql://localhost:3306/"+dbName;
-    private static String password   = "mysql";
+    private static GenericObjectPool gPool = null;
+    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
-
-    public static void makeJDBCConnection(SessionHandler s) throws Exception {
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
+    public static DataSource makeDBConnection() throws Exception {
 
         try {
 
-            LogHandler.writeInfoFile("00000000000000000000000000000000","Starting Database Connection");
-            LogHandler.writeInfoFile("00000000000000000000000000000000","Database: "+dbName);
-            LogHandler.writeInfoFile("00000000000000000000000000000000","User    : "+userName);
-            LogHandler.writeInfoFile("00000000000000000000000000000000","URL     : "+url);
-            s.setDbCon(DriverManager.getConnection(url,userName,password));
 
-            LogHandler.writeInfoFile("00000000000000000000000000000000","Database connected successfully");
 
-        } catch (SQLException e) {
+            LogWriter.writeInfoFile("00000000000000000000000000000000", "Starting Database Connection");
+            LogWriter.writeInfoFile("00000000000000000000000000000000", "Database: " + SysConfig.dbName);
+            LogWriter.writeInfoFile("00000000000000000000000000000000", "User    : " + SysConfig.userName);
+            LogWriter.writeInfoFile("00000000000000000000000000000000", "URL     : " + SysConfig.url);
+
+
+            Class.forName(JDBC_DRIVER);
+            gPool = new GenericObjectPool();
+            gPool.setMaxActive(5);
+
+            ConnectionFactory cf = new DriverManagerConnectionFactory(SysConfig.dbName, SysConfig.userName, SysConfig.url);
+            PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, gPool, null, null, false, true);
+
+
+            DataSource ds = new PoolingDataSource(gPool);
+            Connection connObj = ds.getConnection();
+
+
+            return new PoolingDataSource(gPool);
+
+        }catch (Exception e) {
             e.printStackTrace();
-            return;
         }
 
+        return null;
     }
+
+    public static GenericObjectPool getConnectionPool() {
+        return gPool;
+    }
+
+    public static void printDbStatus() {
+        System.out.println("Max.: " + getConnectionPool().getMaxActive() + "; Active: " + getConnectionPool().getNumActive() + "; Idle: " + getConnectionPool().getNumIdle());
+    }
+
 
 }

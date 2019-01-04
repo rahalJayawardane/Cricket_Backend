@@ -1,7 +1,8 @@
 package Server.Database;
 
-import Server.Configurations.sysConfig;
+import Server.Configurations.SysConfig;
 import Server.Util.SessionHandler;
+import Server.Util.UtilMethods;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -27,7 +28,7 @@ public class DataBaseQuery {
 
         try {
             ps = conn.prepareStatement("SELECT * FROM cricket_games where status = ? order by Date desc");
-            ps.setInt(1,sysConfig.Active);
+            ps.setInt(1,SysConfig.Active);
             rs = ps.executeQuery();
             while (rs.next()) {
 
@@ -45,7 +46,8 @@ public class DataBaseQuery {
             s.setList(jsonArray);
 
         } catch(Exception e) {
-            e.printStackTrace();
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
 
         } finally {
             if(rs != null) rs.close();
@@ -130,7 +132,7 @@ public class DataBaseQuery {
         Connection conn = s.getDbCon();
         PreparedStatement ps = null;
 
-        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
 
         try {
             ps = conn.prepareStatement("SELECT * FROM games_col_details where ID = ? and colNo=?");
@@ -139,12 +141,15 @@ public class DataBaseQuery {
             rs = ps.executeQuery();
             while (rs.next()) {
 
+                JSONObject jsonObject = new JSONObject();
                 jsonObject.put("value",rs.getString("value"));
                 jsonObject.put("no",rs.getString("no"));
 
+                jsonArray.add(jsonObject);
+
             }
 
-            s.setMessage(jsonObject);
+            s.setList(jsonArray);
 
         } catch(Exception e) {
             e.printStackTrace();

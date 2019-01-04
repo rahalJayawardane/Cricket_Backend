@@ -1,25 +1,26 @@
 package Server.Util;
 
-public class Request {
-    private static String   gameId;
-    private static int      colNo;
+import java.io.Serializable;
+
+public class Request implements Serializable {
+
+    private String   gameId;
+    private int      colNo;
 
 
-
-
-    public static String getGameId() {
+    public String getGameId() {
         return gameId;
     }
 
-    public static void setGameId(String gameId) {
-        Request.gameId = gameId;
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
-    public static int getColNo() {
+    public int getColNo() {
         return colNo;
     }
 
-    public static void setColNo(int colNo) {
-        Request.colNo = colNo;
+    public void setColNo(int colNo) {
+        this.colNo = colNo;
     }
 }

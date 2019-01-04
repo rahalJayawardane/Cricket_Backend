@@ -1,5 +1,7 @@
 package Server.Util;
 
+import Server.Configurations.SysConfig;
+import Server.Database.DatabaseConfig;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -8,36 +10,60 @@ import java.sql.Connection;
 
 public class SessionHandler {
 
-    private static Connection  dbCon;
-    private static String      gameId;
-    private static String      gameDate;
-    private static int         colNo;
-    private static JSONObject  message;
-    private static JSONArray   list;
+    private Connection  dbCon;
+    private String      gameId;
+    private String      gameDate;
+    private String      requestId;
+    private int         colNo;
+    private JSONObject  message;
+    private JSONArray   list;
 
 
-    public static int getColNo() {
+    public SessionHandler() throws Exception {
+
+        if(SysConfig.dataSource != null){
+            System.out.println("no null");
+            DatabaseConfig.printDbStatus();
+            System.out.println(SysConfig.dataSource);
+        }else {
+            System.out.println("null");
+        }
+
+        this.dbCon = SysConfig.dataSource.getConnection();
+        DatabaseConfig.printDbStatus();
+
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public int getColNo() {
         return colNo;
     }
 
-    public static void setColNo(int colNo) {
-        SessionHandler.colNo = colNo;
+    public void setColNo(int colNo) {
+        this.colNo = colNo;
     }
 
-    public static JSONArray getList() {
+    public JSONArray getList() {
         return list;
     }
 
-    public static void setList(JSONArray list) {
-        SessionHandler.list = list;
+    public void setList(JSONArray list) {
+        this.list = list;
     }
 
-    public static JSONObject getMessage() {
+    public JSONObject getMessage() {
         return message;
     }
 
-    public static void setMessage(JSONObject message) {
-        SessionHandler.message = message;
+    public void setMessage(JSONObject message) {
+        this.message = message;
     }
 
     public Connection getDbCon() {

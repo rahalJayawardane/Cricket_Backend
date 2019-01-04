@@ -1,6 +1,7 @@
 package Server.Util;
 
 
+import Server.LogHandler.LogWriter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -15,7 +16,7 @@ public class Response {
         this.reqId = requestId;
         this.list  = data;
 
-        LogHandler.writeInfoFile(reqId, "Response : "+list.toString());
+        LogWriter.writeInfoFile(reqId, "Response : "+list.toString());
 
     }
 
@@ -23,7 +24,7 @@ public class Response {
         this.reqId = requestId;
         this.message= data;
 
-        LogHandler.writeInfoFile(reqId, "Response : "+message.toString());
+        LogWriter.writeInfoFile(reqId, "Response : "+message.toString());
     }
 
 

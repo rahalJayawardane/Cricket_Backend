@@ -3,12 +3,15 @@ package Server.Cricket.Transactions;
 import Server.Database.DatabaseLayer;
 import Server.LogHandler.LogWriter;
 import Server.Util.*;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Rahal on 1/1/2019.
  */
-
 @RestController
 @RequestMapping("/cricket/view")
 public class Views {
@@ -18,16 +21,16 @@ public class Views {
 
     /**
      * Get All cricket games which are active
-     * @param s
+     * @param
      * @return
      * @throws Exception
      */
-
+    @Async("threadPoolTaskExecutor")
     @GetMapping("/getCricketGames")
-    public Response getCricketGames() throws Exception {
+    public CompletableFuture <Response> getCricketGames() throws Exception {
 
         SessionHandler s = new SessionHandler();
-        String reqId = UtilMethods.getReqId();
+        s.setRequestId(UtilMethods.getReqId());
 
         LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : All Cricket Games");
         LogWriter.writeInfoFile(s.getRequestId(), "Get details from database");
@@ -35,21 +38,29 @@ public class Views {
         DatabaseLayer.getCricketGames(s);
 
         LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
-        return new Response(s.getRequestId(), s.getList());
+
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
+
     }
 
 
     /**
      * Get get games active details
-     * @param s
+     * @param request
      * @return
      * @throws Exception
      */
+    @Async
     @PostMapping("/getGameDetails")
     @ResponseBody
-    public Response getGameDetails(SessionHandler s, @RequestBody Request request) throws Exception {
+    public CompletableFuture <Response> getGameDetails(@RequestBody Request request) throws Exception {
+
+        SessionHandler s = new SessionHandler();
         s.setRequestId(UtilMethods.getReqId());
         s.setGameId(request.getGameId());
+
+//        Thread.sleep(5000);
 
         LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Game Details -  Game ID: "+s.getGameId());
         LogWriter.writeInfoFile(s.getRequestId(), "Get details from database");
@@ -58,18 +69,21 @@ public class Views {
 
         LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
 
-        return new Response(s.getRequestId(), s.getMessage());
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
     }
 
     /**
      * Get get games columns details
-     * @param s
+     * @param request
      * @return
      * @throws Exception
      */
     @RequestMapping("/getColDetails")
     @ResponseBody
-    public Response getColumndetails(SessionHandler s, @RequestBody Request request) throws Exception {
+    public CompletableFuture <Response> getColumndetails(@RequestBody Request request) throws Exception {
+
+        SessionHandler s = new SessionHandler();
         s.setRequestId(UtilMethods.getReqId());
         s.setColNo(request.getColNo());
         s.setGameId(request.getGameId());
@@ -82,7 +96,8 @@ public class Views {
 
         LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
 
-        return new Response(s.getRequestId(), s.getList());
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
     }
 
 

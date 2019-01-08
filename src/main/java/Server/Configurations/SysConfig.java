@@ -12,6 +12,8 @@ public class SysConfig {
     public static String   url              = "jdbc:mysql://localhost:3306/"+dbName;
     public static String   password         = "mysql";
     public static DataSource dataSource     = null;
+    public static int max_connection        = 20;
+
 
     //server
     public static String    portProperty    = "server.port";

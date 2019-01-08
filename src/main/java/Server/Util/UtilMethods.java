@@ -1,10 +1,12 @@
 package Server.Util;
 
+import Server.Database.DatabaseConfig;
 import Server.LogHandler.LogWriter;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,4 +65,12 @@ public class UtilMethods {
         LogWriter.writeErrorFile(s.getRequestId(), result.toString());
     }
 
+    public static void clearData(SessionHandler s) throws Exception {
+        if(s.getDbCon() != null){
+            LogWriter.writeInfoFile(s.getRequestId(), "Clearing Database Connection");
+            s.getDbCon().close();
+            DatabaseConfig.printDbStatus();
+        }
+        s = null;
+    }
 }

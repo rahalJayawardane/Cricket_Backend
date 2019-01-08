@@ -12,21 +12,19 @@ public class Response {
     private JSONObject  message;
 
 
-    public Response(String requestId, JSONArray data) throws Exception {
-        this.reqId = requestId;
-        this.list  = data;
+    public Response(SessionHandler s) throws Exception {
+        this.reqId = s.getRequestId();
+        if(s.getList() != null){
+            this.list  = s.getList();
+            LogWriter.writeInfoFile(reqId, "Response : "+list.toString());
+        }else{
+            this.message = s.getMessage();
+            LogWriter.writeInfoFile(reqId, "Response : "+message.toString());
 
-        LogWriter.writeInfoFile(reqId, "Response : "+list.toString());
+        }
+        UtilMethods.clearData(s);
 
     }
-
-    public Response(String requestId, JSONObject data) throws Exception {
-        this.reqId = requestId;
-        this.message= data;
-
-        LogWriter.writeInfoFile(reqId, "Response : "+message.toString());
-    }
-
 
     public JSONArray getList() {
         return list;

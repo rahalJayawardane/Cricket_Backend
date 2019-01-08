@@ -24,8 +24,6 @@ public class DatabaseConfig {
 
         try {
 
-
-
             LogWriter.writeInfoFile("00000000000000000000000000000000", "Starting Database Connection");
             LogWriter.writeInfoFile("00000000000000000000000000000000", "Database: " + SysConfig.dbName);
             LogWriter.writeInfoFile("00000000000000000000000000000000", "User    : " + SysConfig.userName);
@@ -34,15 +32,10 @@ public class DatabaseConfig {
 
             Class.forName(JDBC_DRIVER);
             gPool = new GenericObjectPool();
-            gPool.setMaxActive(5);
+            gPool.setMaxActive(SysConfig.max_connection);
 
-            ConnectionFactory cf = new DriverManagerConnectionFactory(SysConfig.dbName, SysConfig.userName, SysConfig.url);
+            ConnectionFactory cf = new DriverManagerConnectionFactory(SysConfig.url, SysConfig.userName, SysConfig.password);
             PoolableConnectionFactory pcf = new PoolableConnectionFactory(cf, gPool, null, null, false, true);
-
-
-            DataSource ds = new PoolingDataSource(gPool);
-            Connection connObj = ds.getConnection();
-
 
             return new PoolingDataSource(gPool);
 

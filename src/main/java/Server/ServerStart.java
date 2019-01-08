@@ -7,10 +7,25 @@ import Server.LogHandler.LogWriter;
 import Server.Util.SessionHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-
+@EnableAsync
 @SpringBootApplication
 public class ServerStart {
+
+
+    @Bean("threadPoolTaskExecutor")
+    public TaskExecutor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(20);
+        executor.setMaxPoolSize(1000);
+        executor.setWaitForTasksToCompleteOnShutdown(false);
+        executor.setThreadNamePrefix("Async-");
+        return executor;
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -28,7 +43,8 @@ public class ServerStart {
         LogWriter.writeInfoFile("00000000000000000000000000000000","=============================================");
 
         SysConfig.dataSource = DatabaseConfig.makeDBConnection();
-        //DatabaseConfig.printDbStatus();
+        DatabaseConfig.printDbStatus();
+
 
 
 

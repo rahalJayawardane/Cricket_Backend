@@ -21,14 +21,6 @@ public class SessionHandler {
 
     public SessionHandler() throws Exception {
 
-        if(SysConfig.dataSource != null){
-            System.out.println("no null");
-            DatabaseConfig.printDbStatus();
-            System.out.println(SysConfig.dataSource);
-        }else {
-            System.out.println("null");
-        }
-
         this.dbCon = SysConfig.dataSource.getConnection();
         DatabaseConfig.printDbStatus();
 

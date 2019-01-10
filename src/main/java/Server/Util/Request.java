@@ -6,6 +6,8 @@ public class Request implements Serializable {
 
     private String   gameId;
     private int      colNo;
+    private String   colDetails;
+    private int      colId;
 
 
     public String getGameId() {
@@ -22,5 +24,21 @@ public class Request implements Serializable {
 
     public void setColNo(int colNo) {
         this.colNo = colNo;
+    }
+
+    public String getColDetails() {
+        return colDetails;
+    }
+
+    public void setColDetails(String colDetails) {
+        this.colDetails = colDetails;
+    }
+
+    public int getColId() {
+        return colId;
+    }
+
+    public void setColId(int colId) {
+        this.colId = colId;
     }
 }

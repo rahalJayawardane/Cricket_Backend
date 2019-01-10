@@ -17,7 +17,7 @@ public class SessionHandler {
     private int         colNo;
     private JSONObject  message;
     private JSONArray   list;
-
+    private String      colDetails;
 
     public SessionHandler() throws Exception {
 
@@ -80,6 +80,14 @@ public class SessionHandler {
 
     public void setGameDate(String gameDate) {
         this.gameDate = gameDate;
+    }
+
+    public String getColDetails() {
+        return colDetails;
+    }
+
+    public void setColDetails(String colDetails) {
+        this.colDetails = colDetails;
     }
 }
 

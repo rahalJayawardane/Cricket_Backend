@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @RestController
 @RequestMapping("/cricket/view")
+@CrossOrigin()
 public class Views {
 
     String appId = "abc";

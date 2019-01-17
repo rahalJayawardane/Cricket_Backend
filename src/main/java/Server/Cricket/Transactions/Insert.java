@@ -6,10 +6,8 @@ import Server.Util.Request;
 import Server.Util.Response;
 import Server.Util.SessionHandler;
 import Server.Util.UtilMethods;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -18,9 +16,8 @@ import java.util.concurrent.CompletableFuture;
  */
 
 @RestController
-
-
 @RequestMapping("/cricket/insert")
+@CrossOrigin()
 public class Insert {
 
     String appId = "abc";
@@ -33,9 +30,10 @@ public class Insert {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/getColDetails")
+    @Async("threadPoolTaskExecutor")
+    @PostMapping("/insertGame")
     @ResponseBody
-    public CompletableFuture<Response> insertColumndetails(@RequestBody Request request) throws Exception {
+    public CompletableFuture<Response> insertGameDetails(@RequestBody Request request) throws Exception {
 
         SessionHandler s = new SessionHandler();
         s.setRequestId(UtilMethods.getReqId());

@@ -54,7 +54,7 @@ public class Views {
      * @return
      * @throws Exception
      */
-    @Async
+    @Async("threadPoolTaskExecutor")
     @PostMapping("/getGameDetails")
     @ResponseBody
     public CompletableFuture <Response> getGameDetails(@RequestBody Request request) throws Exception {
@@ -80,6 +80,7 @@ public class Views {
      * @return
      * @throws Exception
      */
+    @Async("threadPoolTaskExecutor")
     @RequestMapping("/getColDetails")
     @ResponseBody
     public CompletableFuture <Response> getColumndetails(@RequestBody Request request) throws Exception {

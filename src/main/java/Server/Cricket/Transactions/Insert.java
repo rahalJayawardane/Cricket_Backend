@@ -1,13 +1,16 @@
 package Server.Cricket.Transactions;
 
-import Server.Configurations.SysConfig;
 import Server.Database.DatabaseLayer;
 import Server.LogHandler.LogWriter;
 import Server.Util.Request;
 import Server.Util.Response;
 import Server.Util.SessionHandler;
 import Server.Util.UtilMethods;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,8 +19,9 @@ import java.util.concurrent.CompletableFuture;
  */
 
 @RestController
+
+
 @RequestMapping("/cricket/insert")
-@CrossOrigin(origins = SysConfig.crossOrigin)
 public class Insert {
 
     String appId = "abc";
@@ -30,23 +34,23 @@ public class Insert {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/insertColDetails")
+    @Async("threadPoolTaskExecutor")
+    @RequestMapping("/getColDetails")
     @ResponseBody
     public CompletableFuture<Response> insertColumndetails(@RequestBody Request request) throws Exception {
 
         SessionHandler s = new SessionHandler();
         s.setRequestId(UtilMethods.getReqId());
         s.setColNo(request.getColNo());
-        s.setColId(request.getColId());
         s.setGameId(request.getGameId());
+        s.setColNo(request.getColNo());
         s.setColDetails(request.getColDetails());
 
 
         LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Insert Columns Details - Game ID: "+s.getGameId()+" | Column No: "+s.getColNo());
-        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Insert Columns Details - Value ID: "+s.getColId()+" | Value: "+s.getColDetails());
         LogWriter.writeInfoFile(s.getRequestId(), "Insert details from database");
 
-        DatabaseLayer.insertColumnDetails(s);
+//        DatabaseLayer.getColumnDetails(s);
 
         LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
 

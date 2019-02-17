@@ -21,5 +21,9 @@ public class SysConfig {
     public static String    version         = "V_1.00.0";
     public static String    releaseDate     = "2019-01-01";
 
+    public static final String    crossOrigin     = "http://localhost:8000";
+
+
+
 
 }

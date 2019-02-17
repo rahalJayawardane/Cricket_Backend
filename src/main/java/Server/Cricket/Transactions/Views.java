@@ -1,5 +1,6 @@
 package Server.Cricket.Transactions;
 
+import Server.Configurations.SysConfig;
 import Server.Database.DatabaseLayer;
 import Server.LogHandler.LogWriter;
 import Server.Util.*;
@@ -14,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @RestController
 @RequestMapping("/cricket/view")
-@CrossOrigin()
+@CrossOrigin(origins = SysConfig.crossOrigin)
 public class Views {
 
     String appId = "abc";
@@ -61,8 +62,6 @@ public class Views {
         SessionHandler s = new SessionHandler();
         s.setRequestId(UtilMethods.getReqId());
         s.setGameId(request.getGameId());
-
-//        Thread.sleep(5000);
 
         LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Game Details -  Game ID: "+s.getGameId());
         LogWriter.writeInfoFile(s.getRequestId(), "Get details from database");

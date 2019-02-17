@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Request implements Serializable {
 
     private String   gameId;
-    private int      colNo;
+    private String   colNo;
     private String   colDetails;
     private int      colId;
 
@@ -16,14 +16,6 @@ public class Request implements Serializable {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
-    }
-
-    public int getColNo() {
-        return colNo;
-    }
-
-    public void setColNo(int colNo) {
-        this.colNo = colNo;
     }
 
     public String getColDetails() {
@@ -40,5 +32,13 @@ public class Request implements Serializable {
 
     public void setColId(int colId) {
         this.colId = colId;
+    }
+
+    public String getColNo() {
+        return colNo;
+    }
+
+    public void setColNo(String colNo) {
+        this.colNo = colNo;
     }
 }

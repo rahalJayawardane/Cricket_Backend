@@ -14,7 +14,8 @@ public class SessionHandler {
     private String      gameId;
     private String      gameDate;
     private String      requestId;
-    private int         colNo;
+    private String      colNo;
+    private int         colId;
     private JSONObject  message;
     private JSONArray   list;
     private String      colDetails;
@@ -32,14 +33,6 @@ public class SessionHandler {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
-    }
-
-    public int getColNo() {
-        return colNo;
-    }
-
-    public void setColNo(int colNo) {
-        this.colNo = colNo;
     }
 
     public JSONArray getList() {
@@ -88,6 +81,22 @@ public class SessionHandler {
 
     public void setColDetails(String colDetails) {
         this.colDetails = colDetails;
+    }
+
+    public String getColNo() {
+        return colNo;
+    }
+
+    public void setColNo(String colNo) {
+        this.colNo = colNo;
+    }
+
+    public int getColId() {
+        return colId;
+    }
+
+    public void setColId(int colId) {
+        this.colId = colId;
     }
 }
 

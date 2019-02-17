@@ -20,12 +20,16 @@ public class DatabaseLayer {
     }
 
     //Insert    ---------------------------------------------------------------
-
+    public static void insertColumnDetails(SessionHandler s) throws Exception{
+        DataBaseQuery.insertColumnDetails(s);
+    }
 
     //Updates   ---------------------------------------------------------------
 
 
     //Delete    ---------------------------------------------------------------
-
+    public static void deleteColumnDetails(SessionHandler s) throws Exception{
+        DataBaseQuery.deleteColumnDetails(s);
+    }
 
 }

@@ -43,15 +43,20 @@ public class DataBaseQuery {
 
             }
 
-            s.setList(jsonArray);
-
         } catch(Exception e) {
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Error","Backend Service Error Found");
+            jsonArray.add(jsonObject);
+
             UtilMethods.getStackTrace((Throwable) e,s);
             throw e;
 
         } finally {
             if(rs != null) rs.close();
             if(ps != null) ps.close();
+
+            s.setList(jsonArray);
         }
 
     }
@@ -85,14 +90,19 @@ public class DataBaseQuery {
 
             }
 
-            s.setList(jsonArray);
-
         } catch(Exception e) {
-            e.printStackTrace();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Error","Backend Service Error Found");
+            jsonArray.add(jsonObject);
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
 
         } finally {
             if(rs != null) rs.close();
             if(ps != null) ps.close();
+
+            s.setList(jsonArray);
         }
     }
 
@@ -124,18 +134,99 @@ public class DataBaseQuery {
 
             }
 
-            s.setList(jsonArray);
-
         } catch(Exception e) {
-            e.printStackTrace();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Error","Backend Service Error Found");
+            jsonArray.add(jsonObject);
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
 
         } finally {
             if(rs != null) rs.close();
             if(ps != null) ps.close();
+
+            s.setList(jsonArray);
         }
 
     }
 
+
+    /**
+     * Checking column details
+     * @param s - sessionHandler
+     * @throws Exception
+     */
+    public static void checkColumnDetails(SessionHandler s) throws Exception{
+
+        ResultSet rs = null;
+        Connection conn = s.getDbCon();
+        PreparedStatement ps = null;
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            ps = conn.prepareStatement("SELECT count(GameCode) as countCols FROM game_deatils where ID = ? and GameCode=?");
+            ps.setString(1,s.getGameId());
+            ps.setString(2,s.getColNo());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                jsonObject.put("result",rs.getString("countCols"));
+            }
+
+        } catch(Exception e) {
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
+
+        } finally {
+            if(rs != null) rs.close();
+            if(ps != null) ps.close();
+
+            s.setMessage(jsonObject);
+        }
+
+    }
+
+
+    /**
+     * Checking column values
+     * @param s - sessionHandler
+     * @throws Exception
+     */
+    public static void checkColumnValues(SessionHandler s) throws Exception{
+
+        ResultSet rs = null;
+        Connection conn = s.getDbCon();
+        PreparedStatement ps = null;
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            ps = conn.prepareStatement("SELECT count(*) as countValues FROM games_col_details WHERE ID = ? and colCode = ? and no = ?");
+            ps.setString(1,s.getGameId());
+            ps.setString(2,s.getColNo());
+            ps.setInt(3,s.getColId());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                jsonObject.put("result",rs.getString("countValues"));
+            }
+
+        } catch(Exception e) {
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
+
+        } finally {
+            if(rs != null) rs.close();
+            if(ps != null) ps.close();
+
+            s.setMessage(jsonObject);
+        }
+
+    }
 
 
 
@@ -170,10 +261,56 @@ public class DataBaseQuery {
             s.setMessage(jsonObject);
 
         } catch(Exception e) {
-            e.printStackTrace();
+
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
 
         } finally {
             if(ps != null) ps.close();
+            s.setMessage(jsonObject);
+        }
+
+    }
+
+    /**
+     * insert new bet to a game
+     * @param s - sessionHandler
+     * @throws Exception
+     */
+    public static void insertNewBet(SessionHandler s) throws Exception{
+
+        Connection conn = s.getDbCon();
+        PreparedStatement ps = null;
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            ps = conn.prepareStatement("INSERT INTO game_deatils(ID, GameCode, Value, Vissiblity) VALUES (?,?,?,?)");
+            ps.setString(1,s.getGameId());
+            ps.setString(2,s.getColNo());
+            ps.setString(3,s.getColDetails());
+            ps.setInt(4,SysConfig.betVisibility);
+
+            if(ps.executeUpdate() == 1){
+                jsonObject.put("response","success");
+            }else{
+                jsonObject.put("response","failed");
+            }
+
+
+
+        } catch(Exception e) {
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
+
+        } finally {
+            if(ps != null) ps.close();
+
+            s.setMessage(jsonObject);
         }
 
     }
@@ -182,12 +319,10 @@ public class DataBaseQuery {
 
 
 
-
-
     //    /////////////////// ---------------------------- Delete -----------------------/////////////////////
 
     /**
-     * insert values to column
+     * Delete values from column
      * @param s - sessionHandler
      * @throws Exception
      */
@@ -214,10 +349,67 @@ public class DataBaseQuery {
             s.setMessage(jsonObject);
 
         } catch(Exception e) {
-            e.printStackTrace();
+
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
 
         } finally {
             if(ps != null) ps.close();
+
+            s.setMessage(jsonObject);
+        }
+
+    }
+
+
+    /**
+     * Delete bets from games
+     * @param s - sessionHandler
+     * @throws Exception
+     */
+    public static void deleteBets(SessionHandler s) throws Exception{
+
+        Connection conn = s.getDbCon();
+        PreparedStatement ps = null;
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            ps = conn.prepareStatement("DELETE FROM games_col_details WHERE ID = ? and colCode = ?");
+            ps.setString(1,s.getGameId());
+            ps.setString(2,s.getColNo());
+
+            if(ps.executeUpdate() == 1){
+
+                ps = conn.prepareStatement("DELETE FROM game_deatils WHERE ID = ? and GameCode = ?");
+                ps.setString(1,s.getGameId());
+                ps.setString(2,s.getColNo());
+
+                if(ps.executeUpdate() == 1){
+                    jsonObject.put("response","success");
+                }else{
+                    jsonObject.put("response","failed to delete game_deatils");
+                }
+            }else{
+                jsonObject.put("response","failed to delete games_col_details");
+            }
+
+
+            s.setMessage(jsonObject);
+
+        } catch(Exception e) {
+
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
+
+        } finally {
+            if(ps != null) ps.close();
+
+            s.setMessage(jsonObject);
         }
 
     }

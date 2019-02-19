@@ -19,9 +19,21 @@ public class DatabaseLayer {
         DataBaseQuery.getColumnDetails(s);
     }
 
+    public static void checkColumnDetails(SessionHandler s) throws Exception{
+        DataBaseQuery.checkColumnDetails(s);
+    }
+
+    public static void checkColumnValues(SessionHandler s) throws Exception{
+        DataBaseQuery.checkColumnValues(s);
+    }
+
     //Insert    ---------------------------------------------------------------
     public static void insertColumnDetails(SessionHandler s) throws Exception{
         DataBaseQuery.insertColumnDetails(s);
+    }
+
+    public static void insertNewBet(SessionHandler s) throws Exception{
+        DataBaseQuery.insertNewBet(s);
     }
 
     //Updates   ---------------------------------------------------------------
@@ -30,6 +42,10 @@ public class DatabaseLayer {
     //Delete    ---------------------------------------------------------------
     public static void deleteColumnDetails(SessionHandler s) throws Exception{
         DataBaseQuery.deleteColumnDetails(s);
+    }
+
+    public static void deleteBets(SessionHandler s) throws Exception{
+        DataBaseQuery.deleteBets(s);
     }
 
 }

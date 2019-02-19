@@ -26,7 +26,7 @@ public class Insert {
 
 
     /**
-     * Get get games columns details
+     * insert new value to columns details
      * @param request
      * @return
      * @throws Exception
@@ -55,6 +55,34 @@ public class Insert {
         return CompletableFuture.completedFuture(response);
     }
 
+    /**
+     * insert ne bet type
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/insertNewBet")
+    @ResponseBody
+    public CompletableFuture<Response> insertNewBet(@RequestBody Request request) throws Exception {
+
+        SessionHandler s = new SessionHandler();
+        s.setRequestId(UtilMethods.getReqId());
+        s.setColNo(request.getColNo());
+        s.setGameId(request.getGameId());
+        s.setColDetails(request.getColDetails());
+
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Insert Bet Details - Game ID: "+s.getGameId()+" | Bet Code: "+s.getColNo());
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Insert Bet Details - Description: "+s.getColDetails());
+        LogWriter.writeInfoFile(s.getRequestId(), "Insert details from database");
+
+        DatabaseLayer.insertNewBet(s);
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
+
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
+    }
 
 
 

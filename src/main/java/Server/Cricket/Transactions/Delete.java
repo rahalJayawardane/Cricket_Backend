@@ -51,4 +51,32 @@ public class Delete {
         Response response = new Response(s);
         return CompletableFuture.completedFuture(response);
     }
+
+
+    /**
+     * Get get games columns details
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/deleteBets")
+    @ResponseBody
+    public CompletableFuture<Response> deleteBets(@RequestBody Request request) throws Exception {
+
+        SessionHandler s = new SessionHandler();
+        s.setRequestId(UtilMethods.getReqId());
+        s.setColNo(request.getColNo());
+        s.setGameId(request.getGameId());
+
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Delete Bet - Game ID: "+s.getGameId()+" | Column No: "+s.getColNo());
+        LogWriter.writeInfoFile(s.getRequestId(), "Delete details from database");
+
+        DatabaseLayer.deleteBets(s);
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
+
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
+    }
 }

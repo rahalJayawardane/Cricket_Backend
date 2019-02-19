@@ -24,6 +24,8 @@ public class SysConfig {
     public static final String    crossOrigin     = "http://localhost:8000";
 
 
+    //Game Details
+    public static int    betVisibility       = 1;
 
 
 }

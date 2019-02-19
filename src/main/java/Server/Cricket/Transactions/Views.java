@@ -103,6 +103,63 @@ public class Views {
     }
 
 
+    /**
+     * check columns is taken
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @Async("threadPoolTaskExecutor")
+    @RequestMapping("/checkColDetails")
+    @ResponseBody
+    public CompletableFuture <Response> checkColDetails(@RequestBody Request request) throws Exception {
+
+        SessionHandler s = new SessionHandler();
+        s.setRequestId(UtilMethods.getReqId());
+        s.setColNo(request.getColNo());
+        s.setGameId(request.getGameId());
+
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Checking Columns Details - Game ID: "+s.getGameId()+" | Column No: "+s.getColNo());
+        LogWriter.writeInfoFile(s.getRequestId(), "Get details from database");
+
+        DatabaseLayer.checkColumnDetails(s);
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
+
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
+    }
+
+    /**
+     * check value is taken
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @Async("threadPoolTaskExecutor")
+    @RequestMapping("/colValues")
+    @ResponseBody
+    public CompletableFuture <Response> colValues(@RequestBody Request request) throws Exception {
+
+        SessionHandler s = new SessionHandler();
+        s.setRequestId(UtilMethods.getReqId());
+        s.setColNo(request.getColNo());
+        s.setGameId(request.getGameId());
+        s.setColId(request.getColId());
+
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Checking Columns Details - Game ID: "+s.getGameId()+" | Column No: "+s.getColNo());
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Checking Columns Details - Value ID: "+s.getColId());
+        LogWriter.writeInfoFile(s.getRequestId(), "Insert details from database");
+
+        DatabaseLayer.checkColumnValues(s);
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
+
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
+    }
 
 
 }

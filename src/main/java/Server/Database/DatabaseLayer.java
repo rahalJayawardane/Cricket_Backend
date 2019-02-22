@@ -37,6 +37,9 @@ public class DatabaseLayer {
     }
 
     //Updates   ---------------------------------------------------------------
+    public static void updateBet(SessionHandler s) throws Exception{
+        DataBaseQuery.updateBet(s);
+    }
 
 
     //Delete    ---------------------------------------------------------------

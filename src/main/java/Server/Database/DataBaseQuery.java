@@ -315,7 +315,58 @@ public class DataBaseQuery {
 
     }
 
+    //    /////////////////// ---------------------------- Update -----------------------/////////////////////
 
+
+    /**
+     * update bet in a game
+     * @param s - sessionHandler
+     * @throws Exception
+     */
+    public static void updateBet(SessionHandler s) throws Exception{
+
+        Connection conn = s.getDbCon();
+        PreparedStatement ps = null;
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            if(s.getColId() > 1){
+                ps = conn.prepareStatement("UPDATE game_deatils SET Value =? WHERE ID=? AND GameCode=?");
+                System.out.println("value");
+                ps.setString(1,s.getColDetails());
+                ps.setString(2,s.getGameId());
+                ps.setString(3,s.getColNo());
+            }else{
+                ps = conn.prepareStatement("UPDATE game_deatils SET Vissiblity=? WHERE ID=? AND GameCode=?");
+                System.out.println("visibility");
+                ps.setInt(1,s.getColId());
+                ps.setString(2,s.getGameId());
+                ps.setString(3,s.getColNo());
+            }
+
+            if(ps.executeUpdate() == 1){
+                jsonObject.put("response","success");
+            }else{
+                jsonObject.put("response","failed");
+            }
+
+
+
+        } catch(Exception e) {
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
+
+        } finally {
+            if(ps != null) ps.close();
+
+            s.setMessage(jsonObject);
+        }
+
+    }
 
 
 
@@ -377,23 +428,22 @@ public class DataBaseQuery {
         JSONObject jsonObject = new JSONObject();
 
         try {
-            ps = conn.prepareStatement("DELETE FROM games_col_details WHERE ID = ? and colCode = ?");
+
+            ps = conn.prepareStatement("DELETE FROM game_deatils WHERE ID = ? and GameCode = ?");
             ps.setString(1,s.getGameId());
             ps.setString(2,s.getColNo());
 
+
             if(ps.executeUpdate() == 1){
 
-                ps = conn.prepareStatement("DELETE FROM game_deatils WHERE ID = ? and GameCode = ?");
+                ps = conn.prepareStatement("DELETE FROM games_col_details WHERE ID = ? and colCode = ?");
                 ps.setString(1,s.getGameId());
                 ps.setString(2,s.getColNo());
 
-                if(ps.executeUpdate() == 1){
-                    jsonObject.put("response","success");
-                }else{
-                    jsonObject.put("response","failed to delete game_deatils");
-                }
+                jsonObject.put("response","success");
+
             }else{
-                jsonObject.put("response","failed to delete games_col_details");
+                jsonObject.put("response","failed to delete");
             }
 
 

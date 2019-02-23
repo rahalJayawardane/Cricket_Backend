@@ -25,7 +25,7 @@ public class SysConfig {
 
 
     //Game Details
-    public static int    betVisibility       = 1;
+    public static int    visibility       = 1;
 
 
 }

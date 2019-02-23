@@ -36,9 +36,17 @@ public class DatabaseLayer {
         DataBaseQuery.insertNewBet(s);
     }
 
+    public static void insertGame(SessionHandler s) throws Exception{
+        DataBaseQuery.insertGame(s);
+    }
+
     //Updates   ---------------------------------------------------------------
     public static void updateBet(SessionHandler s) throws Exception{
         DataBaseQuery.updateBet(s);
+    }
+
+    public static void updateGame(SessionHandler s) throws Exception{
+        DataBaseQuery.updateGame(s);
     }
 
 

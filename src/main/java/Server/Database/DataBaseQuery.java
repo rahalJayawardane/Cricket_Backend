@@ -1,6 +1,7 @@
 package Server.Database;
 
 import Server.Configurations.SysConfig;
+import Server.LogHandler.LogWriter;
 import Server.Util.SessionHandler;
 import Server.Util.UtilMethods;
 import org.json.simple.JSONArray;
@@ -10,6 +11,9 @@ import org.json.simple.JSONObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class DataBaseQuery {
 
@@ -291,7 +295,7 @@ public class DataBaseQuery {
             ps.setString(1,s.getGameId());
             ps.setString(2,s.getColNo());
             ps.setString(3,s.getColDetails());
-            ps.setInt(4,SysConfig.betVisibility);
+            ps.setInt(4,SysConfig.visibility);
 
             if(ps.executeUpdate() == 1){
                 jsonObject.put("response","success");
@@ -315,6 +319,53 @@ public class DataBaseQuery {
 
     }
 
+
+
+    /**
+     * insert new game
+     * @param s - sessionHandler
+     * @throws Exception
+     */
+    public static void insertGame(SessionHandler s) throws Exception{
+
+        Connection conn = s.getDbCon();
+        PreparedStatement ps = null;
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            ps = conn.prepareStatement("INSERT INTO cricket_games(ID, GameCode, TeamOne, TeamTwo, Date, status) VALUES (?,?,?,?,?,?)");
+            ps.setString(1,s.getGameUniqueId());
+            ps.setString(2,s.getGameId());
+            ps.setString(3,s.getTeamOne());
+            ps.setString(4,s.getTeamTwo());
+            ps.setString(5,s.getGameDate());
+            ps.setInt(6,SysConfig.visibility);
+
+            if(ps.executeUpdate() == 1){
+
+                if( triggerBetCodes(s) && triggerBetValues(s)){
+                    jsonObject.put("response","success");
+                }else{
+                    jsonObject.put("response","Failed when adding betcodes and values");
+                }
+            }else{
+                jsonObject.put("response","failed");
+            }
+
+
+
+        } catch(Exception e) {
+            jsonObject.put("Error","Backend Service Error Found");
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
+
+        } finally {
+            if(ps != null) ps.close();
+            s.setMessage(jsonObject);
+        }
+
+    }
     //    /////////////////// ---------------------------- Update -----------------------/////////////////////
 
 
@@ -334,13 +385,11 @@ public class DataBaseQuery {
 
             if(s.getColId() > 1){
                 ps = conn.prepareStatement("UPDATE game_deatils SET Value =? WHERE ID=? AND GameCode=?");
-                System.out.println("value");
                 ps.setString(1,s.getColDetails());
                 ps.setString(2,s.getGameId());
                 ps.setString(3,s.getColNo());
             }else{
                 ps = conn.prepareStatement("UPDATE game_deatils SET Vissiblity=? WHERE ID=? AND GameCode=?");
-                System.out.println("visibility");
                 ps.setInt(1,s.getColId());
                 ps.setString(2,s.getGameId());
                 ps.setString(3,s.getColNo());
@@ -368,6 +417,78 @@ public class DataBaseQuery {
 
     }
 
+
+    /**
+     * update the game
+     * @param s - sessionHandler
+     * @throws Exception
+     */
+    public static void updateGame(SessionHandler s) throws Exception{
+
+        Connection conn = s.getDbCon();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        JSONObject jsonObject = new JSONObject();
+        String oldTeamOne = null;
+        String oldTeamTwo = null;
+
+
+        try {
+
+            ps = conn.prepareStatement("SELECT * FROM cricket_games WHERE ID=?");
+            ps.setString(1,s.getGameId());
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                oldTeamOne = rs.getString("TeamOne");
+                oldTeamTwo = rs.getString("TeamTwo");
+            }
+
+
+            ps = conn.prepareStatement("UPDATE cricket_games SET TeamOne=?,TeamTwo=?,Date=?,status=? WHERE ID=?");
+            ps.setString(1,s.getTeamOne());
+            ps.setString(2,s.getTeamTwo());
+            ps.setString(3,s.getGameDate());
+            ps.setInt(4,s.getColId());
+            ps.setString(5,s.getGameId());
+
+            if(ps.executeUpdate() == 1){
+
+                ps = conn.prepareStatement("UPDATE games_col_details SET value=? WHERE value = ? and ID = ? ");
+                ps.setString(1,s.getTeamOne());
+                ps.setString(2,oldTeamOne);
+                ps.setString(3,s.getGameId());
+
+                ps.executeUpdate();
+
+                ps = conn.prepareStatement("UPDATE games_col_details SET value=? WHERE value = ? and ID = ? ");
+                ps.setString(1,s.getTeamTwo());
+                ps.setString(2,oldTeamTwo);
+                ps.setString(3,s.getGameId());
+
+                ps.executeUpdate();
+
+                jsonObject.put("response","success");
+            }else{
+                jsonObject.put("response","failed");
+            }
+
+
+
+        } catch(Exception e) {
+            jsonObject.put("Error","Backend Service Error Found");
+
+            UtilMethods.getStackTrace((Throwable) e,s);
+            throw e;
+
+        } finally {
+            if(rs != null) rs.close();
+            if(ps != null) ps.close();
+            s.setMessage(jsonObject);
+        }
+
+    }
 
 
     //    /////////////////// ---------------------------- Delete -----------------------/////////////////////
@@ -429,16 +550,18 @@ public class DataBaseQuery {
 
         try {
 
+            ps = conn.prepareStatement("DELETE FROM games_col_details WHERE ID = ? and colCode = ?");
+            ps.setString(1,s.getGameId());
+            ps.setString(2,s.getColNo());
+
+            ps.executeUpdate();
+
             ps = conn.prepareStatement("DELETE FROM game_deatils WHERE ID = ? and GameCode = ?");
             ps.setString(1,s.getGameId());
             ps.setString(2,s.getColNo());
 
 
             if(ps.executeUpdate() == 1){
-
-                ps = conn.prepareStatement("DELETE FROM games_col_details WHERE ID = ? and colCode = ?");
-                ps.setString(1,s.getGameId());
-                ps.setString(2,s.getColNo());
 
                 jsonObject.put("response","success");
 
@@ -463,4 +586,122 @@ public class DataBaseQuery {
         }
 
     }
+
+
+
+    //    /////////////////// ---------------------------- Triggers -----------------------/////////////////////
+
+    /**
+     * Add default columns to games
+     * @param s - sessionHandler
+     * @throws Exception
+     * return boolean
+     */
+    public static boolean triggerBetCodes(SessionHandler s) throws Exception{
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Start writing the Bet Codes ");
+
+        Connection conn = SysConfig.dataSource.getConnection();
+        PreparedStatement ps = null;
+
+        String mainQuery = "INSERT INTO `game_deatils` (`ID`, `GameCode`, `Value`, `Vissiblity`) VALUES (?,?,?,?) ";
+        Map data = UtilMethods.getTriggerBetData(s.getGameId());
+        Set keys = data.keySet();
+        for(Object key: keys){
+
+            String colDetails= (String) data.get(key);
+            String[] colDetailArray = colDetails.split("&");
+
+            try {
+
+                LogWriter.writeInfoFile(s.getRequestId(), "Query: "+mainQuery);
+                LogWriter.writeInfoFile(s.getRequestId(), "Values: GameId - "+s.getGameUniqueId()+" | BetCode - "+colDetailArray[0]+" | Value - "+colDetailArray[1]);
+
+
+                ps = conn.prepareStatement(mainQuery);
+                ps.setString(1,s.getGameUniqueId());
+                ps.setString(2,colDetailArray[0]);
+                ps.setString(3,colDetailArray[1]);
+                ps.setInt(4,SysConfig.visibility);
+
+                ps.executeUpdate();
+
+
+            } catch(Exception e) {
+
+                UtilMethods.getStackTrace((Throwable) e,s);
+                throw e;
+
+            }
+        }
+
+        if(ps != null) ps.close();
+        if(conn != null) conn.close();
+        return true;
+
+    }
+
+
+    /**
+     * Add default values to bets
+     * @param s - sessionHandler
+     * @throws Exception
+     * return boolean
+     */
+    public static boolean triggerBetValues(SessionHandler s) throws Exception{
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Start writing the Bet Values ");
+
+        Connection conn = SysConfig.dataSource.getConnection();
+        PreparedStatement ps = null;
+
+        String mainQuery = "INSERT INTO `games_col_details` (`ID`, `colCode`, `value`, `no`) VALUES (?,?,?,?) ";
+        Map Cols = UtilMethods.getTriggerBetData(s.getGameId());
+        Map data = UtilMethods.getTriggerBetValues(s.getGameId());
+        Set keys = data.keySet();
+        for(Object key: keys){
+
+            String colDetails= (String) data.get(key);
+            String[] colDetailArray = colDetails.split("&");
+            String[] valueArray = colDetailArray[2].split("\\|");
+
+            for (int i = 0; i < Integer.parseInt(colDetailArray[1]); i++) {
+
+                String value = valueArray[i];
+                if(value.equalsIgnoreCase("T1")){
+                    value = s.getTeamOne();
+                }else if(value.equalsIgnoreCase("T2")){
+                    value = s.getTeamTwo();
+                }
+
+                try {
+
+                    LogWriter.writeInfoFile(s.getRequestId(), "Query: "+mainQuery);
+                    LogWriter.writeInfoFile(s.getRequestId(), "Values: GameId - "+s.getGameId()+" | BetCode - "+colDetailArray[0]+" | Value - "+value+" | valueCode - "+(i+1));
+
+                    ps = conn.prepareStatement(mainQuery);
+                    ps.setString(1,s.getGameUniqueId());
+                    ps.setString(2,colDetailArray[0]);
+                    ps.setString(3,value);
+                    ps.setInt(4,(i+1));
+                    ps.executeUpdate();
+
+
+                } catch(Exception e) {
+
+                    UtilMethods.getStackTrace((Throwable) e,s);
+                    throw e;
+
+                }
+            }
+
+        }
+
+        if(ps != null) ps.close();
+        if(conn != null) conn.close();
+        return true;
+
+    }
+
+
 }

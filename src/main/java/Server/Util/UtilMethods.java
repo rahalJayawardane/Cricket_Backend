@@ -10,9 +10,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by rahal_j on 8/13/2018.
@@ -72,5 +70,76 @@ public class UtilMethods {
             DatabaseConfig.printDbStatus();
         }
         s = null;
+    }
+
+
+    public static String generateGameUniqueId() {
+
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghighlmnopqurstwxyz@_&";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 10) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+    }
+
+    public static Map getTriggerBetData(String GameId) {
+
+        // Value format = <betCode> & <Title>
+        // Sample value = CRT01 & 2 & Match Winner
+
+        Map data = new HashMap();
+        data.put(1,GameId+"01&Match Winner");
+        data.put(2,GameId+"02&Highest Opening Partnership");
+        data.put(3,GameId+"03&Team Make to Highest 1st 6 Overs score");
+        data.put(4,GameId+"04&Most Match Sixes");
+        data.put(5,GameId+"05&Team of Top Match Run Scorer");
+        data.put(39,GameId+"39&Most Match Fours");
+        data.put(40,GameId+"40&Highest Score First Overs");
+        data.put(6,GameId+"06&To Win the Toss");
+        data.put(9,GameId+"09&50 Scored? - 1st Innings");
+        data.put(10,GameId+"10&100 Scored? - 1 st Innings");
+        data.put(11,GameId+"11&Most Run Outs");
+        data.put(17,GameId+"17&Team One - Player 1 - Score 50 or more");
+        data.put(18,GameId+"18&Team One - Player 2 - Score 50 or more");
+        data.put(19,GameId+"19&Team Two - Player 1 - Score 50 or more");
+        data.put(20,GameId+"20&Team Two - Player 2 - Score 50 or more");
+        data.put(21,GameId+"21&1st Wicket Caught?");
+
+
+        return data;
+
+    }
+
+
+    public static Map getTriggerBetValues(String GameId) {
+
+        // Value format = <betCode> & <no of inputs> & <value 1> | <value 2> | <value 3>
+        // Sample value = CRT01 & 2 & Yes | No
+
+        Map data = new HashMap();
+        data.put(1,GameId+"01&2&T1|T2");
+        data.put(2,GameId+"02&2&T1|T2");
+        data.put(3,GameId+"03&2&T1|T2");
+        data.put(4,GameId+"04&3&T1|Tie|T2");
+        data.put(5,GameId+"05&2&T1|T2");
+        data.put(39,GameId+"39&3&T1|Tie|T2");
+        data.put(40,GameId+"40&3&T1|Tie|T2");
+        data.put(6,GameId+"06&2&T1|T2");
+        data.put(9,GameId+"09&2&Yes|No");
+        data.put(10,GameId+"10&2&Yes|No");
+        data.put(11,GameId+"11&3&T1|Tie|T2");
+        data.put(17,GameId+"17&2&Yes|No");
+        data.put(18,GameId+"18&2&Yes|No");
+        data.put(19,GameId+"19&2&Yes|No");
+        data.put(20,GameId+"20&2&Yes|No");
+        data.put(21,GameId+"21&2&Yes|No");
+
+
+        return data;
+
     }
 }

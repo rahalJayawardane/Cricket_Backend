@@ -19,12 +19,43 @@ public class SessionHandler {
     private JSONObject  message;
     private JSONArray   list;
     private String      colDetails;
+    private String      teamOne;
+    private String      teamTwo;
+    private String      gameUniqueId;
+
 
     public SessionHandler() throws Exception {
 
         this.dbCon = SysConfig.dataSource.getConnection();
         DatabaseConfig.printDbStatus();
 
+    }
+
+    // --------------------------------------------
+
+
+    public String getGameUniqueId() {
+        return gameUniqueId;
+    }
+
+    public void setGameUniqueId(String gameUniqueId) {
+        this.gameUniqueId = gameUniqueId;
+    }
+
+    public String getTeamOne() {
+        return teamOne;
+    }
+
+    public void setTeamOne(String teamOne) {
+        this.teamOne = teamOne;
+    }
+
+    public String getTeamTwo() {
+        return teamTwo;
+    }
+
+    public void setTeamTwo(String teamTwo) {
+        this.teamTwo = teamTwo;
     }
 
     public String getRequestId() {

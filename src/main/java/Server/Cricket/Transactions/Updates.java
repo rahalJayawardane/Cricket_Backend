@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 public class Updates {
 
     /**
-     * insert ne bet type
+     * update the bet type
      * @param request
      * @return
      * @throws Exception
@@ -46,4 +46,35 @@ public class Updates {
         return CompletableFuture.completedFuture(response);
     }
 
+    /**
+     * update game
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/updateGame")
+    @ResponseBody
+    public CompletableFuture<Response> UpdateGame(@RequestBody Request request) throws Exception {
+
+        SessionHandler s = new SessionHandler();
+        s.setRequestId(UtilMethods.getReqId());
+        s.setGameId(request.getGameId());
+        s.setTeamOne(request.getTeamOne());
+        s.setTeamTwo(request.getTeamTwo());
+        s.setGameDate(request.getGameDate());
+        s.setColId(request.getColId()); // for disable the game
+
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Update Game Details - Game ID: "+s.getGameId());
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Update Game Details - Team One: "+s.getTeamOne()+" | Team Two: "+s.getTeamTwo()+" | Game Date: "+s.getGameDate());
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Update Game Details - Active status: "+s.getColId());
+        LogWriter.writeInfoFile(s.getRequestId(), "Updating details to the database");
+
+        DatabaseLayer.updateGame(s);
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
+
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
+    }
 }

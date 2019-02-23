@@ -84,6 +84,35 @@ public class Insert {
         return CompletableFuture.completedFuture(response);
     }
 
+    /**
+     * insert a new cricketGame
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/insertNewGame")
+    @ResponseBody
+    public CompletableFuture<Response> insertNewGame(@RequestBody Request request) throws Exception {
 
+        SessionHandler s = new SessionHandler();
+        s.setRequestId(UtilMethods.getReqId());
+        s.setGameId(request.getGameId().toUpperCase());
+        s.setTeamOne(request.getTeamOne());
+        s.setTeamTwo(request.getTeamTwo());
+        s.setGameDate(request.getGameDate());
+        s.setGameUniqueId(UtilMethods.generateGameUniqueId());
+
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Insert New Game - Game ID: "+s.getGameId());
+        LogWriter.writeInfoFile(s.getRequestId(), "Method Calling : Insert New Game - Team One: "+s.getTeamOne()+" | Team One: "+s.getTeamOne()+" | Game Date: "+s.getGameDate());
+        LogWriter.writeInfoFile(s.getRequestId(), "Insert details to database");
+
+        DatabaseLayer.insertGame(s);
+
+        LogWriter.writeInfoFile(s.getRequestId(), "Send response to frontend");
+
+        Response response = new Response(s);
+        return CompletableFuture.completedFuture(response);
+    }
 
 }

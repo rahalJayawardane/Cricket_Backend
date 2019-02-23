@@ -690,6 +690,7 @@ public class DataBaseQuery {
                 } catch(Exception e) {
 
                     UtilMethods.getStackTrace((Throwable) e,s);
+
                     throw e;
 
                 }
